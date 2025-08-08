@@ -67,24 +67,24 @@ From the repository root (the same folder as docker-compose.yml), run the follow
 - To build the images and start all services in the background:  
 
 
-    docker compose up -d --build
+        docker compose up -d --build
 
 
-  - To watch the logs on the first boot:
+- To watch the logs on the first boot:
 
 
-    docker compose logs -f
+        docker compose logs -f
 
 - To stop the services:
 
 
 
-    docker compose down
--To stop the services and remove volumes (⚠️ this will wipe your databases):
+        docker compose down
+- To stop the services and remove volumes (⚠️ this will wipe your databases):
 
 
 
-    docker compose down -v
+        docker compose down -v
 
 # 4. **Service Breakdown**
 - GreenX_db (MySQL 8):
@@ -127,32 +127,32 @@ From the repository root (the same folder as docker-compose.yml), run the follow
 Check that all services are up and running:
 
    
-    Backend: http://localhost:8000 (FastAPI docs may be at /docs)
+Backend: http://localhost:8000 (FastAPI docs may be at /docs)
     
-    Frontend: http://localhost:3015
+Frontend: http://localhost:3015
     
-    InfluxDB UI: http://localhost:8089 (Log in with credentials from your .env file)
+InfluxDB UI: http://localhost:8089 (Log in with credentials from your .env file)
     
-    MySQL: Connect from your host with the mysql CLI:
-  
-      mysql -h 127.0.0.1 -P ${DB_PORT} -u ${MYSQL_USER} -p
+MySQL: Connect from your host with the mysql CLI:
+          
+          mysql -h 127.0.0.1 -P ${DB_PORT} -u ${MYSQL_USER} -p
 # 6. **Running the collectors manually (inside the backend container)**   
 - Open a shell in the backend container:
 
 
-    docker exec -it GreenX_test_container_Backend bash
+        docker exec -it GreenX_test_container_Backend bash
 
 - Run collectors:
     
 
-    # Traffic
-    python /app/collector/datatraffic_main.py 
-
-    # Power
-    python /app/collector/main_power.py
+        # Traffic
+        python /app/collector/datatraffic_main.py 
     
-    # PSU
-    python /app/collector/main_psu.py
+        # Power
+        python /app/collector/main_power.py
+        
+        # PSU
+        python /app/collector/main_psu.py
 
 # 7. Scheduling the collectors
 You can schedule from the host (recommended) or inside the container.
@@ -162,34 +162,34 @@ Below is the host-cron approach, which does not require modifying images.
 - Open crontab:
 
 
-    crontab -e
+        crontab -e
 
 - Create a log folder (optional):
 
 
-    sudo mkdir -p /var/log/greenx && sudo chmod 777 /var/log/greenx
+        sudo mkdir -p /var/log/greenx && sudo chmod 777 /var/log/greenx
 
 
 - Run hourly (recommended)   
 
 
-    cron
-    # TRAFFIC (hourly at minute 0)
-    0 * * * * docker exec GreenX_test_container_Backend python /app/collector/datatraffic_main.py >> /var/log/greenx/datatraffic.log 2>&1
-    
-    # POWER (hourly at minute 5)
-    5 * * * * docker exec GreenX_test_container_Backend python /app/collector/main_power.py >> /var/log/greenx/power.log 2>&1
-    
-    # PSU (hourly at minute 10)
-    10 * * * * docker exec GreenX_test_container_Backend python /app/collector/main_psu.py >> /var/log/greenx/psu.log 2>&1
+        cron
+        # TRAFFIC (hourly at minute 0)
+        0 * * * * docker exec GreenX_test_container_Backend python /app/collector/datatraffic_main.py >> /var/log/greenx/datatraffic.log 2>&1
+        
+        # POWER (hourly at minute 5)
+        5 * * * * docker exec GreenX_test_container_Backend python /app/collector/main_power.py >> /var/log/greenx/power.log 2>&1
+        
+        # PSU (hourly at minute 10)
+        10 * * * * docker exec GreenX_test_container_Backend python /app/collector/main_psu.py >> /var/log/greenx/psu.log 2>&1
 
 - Run every minute (for testing/burn-in)
 
 
-    cron
-    * * * * * docker exec GreenX_test_container_Backend python /app/collector/datatraffic_main.py >> /var/log/greenx/datatraffic.log 2>&1
-    * * * * * docker exec GreenX_test_container_Backend python /app/collector/main_power.py >> /var/log/greenx/power.log 2>&1
-    * * * * * docker exec GreenX_test_container_Backend python /app/collector/main_psu.py >> /var/log/gr
+        cron
+        * * * * * docker exec GreenX_test_container_Backend python /app/collector/datatraffic_main.py >> /var/log/greenx/datatraffic.log 2>&1
+        * * * * * docker exec GreenX_test_container_Backend python /app/collector/main_power.py >> /var/log/greenx/power.log 2>&1
+        * * * * * docker exec GreenX_test_container_Backend python /app/collector/main_psu.py >> /var/log/gr
 **Tip:** Tail logs with sudo tail -f /var/log/greenx/*.log
 
 
@@ -198,16 +198,16 @@ Below is the host-cron approach, which does not require modifying images.
 
 
 
-  
-    nginx
-      docker
+      
+        nginx
+          docker
 
 
   - Arguments:
   
 
-    bash
-     exec GreenX_test_container_Backend python /app/collector/datatraffic_main.py
+        bash
+         exec GreenX_test_container_Backend python /app/collector/datatraffic_main.py
 
 - Repeat task: Every 1 hour (or Every 1 minute for testing).
 
