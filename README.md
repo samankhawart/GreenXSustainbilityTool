@@ -25,7 +25,12 @@ It enables you to:
 
 With these features, GreenX Sustainability Tool not only monitors your infrastructure but also helps you optimize operations, reduce energy waste, and achieve sustainability goals.
 
-# 1. **Prerequisites**  
+# 1. Get the code
+
+        # Clone the repo
+        git clone https://github.com/YourOrg/greenx-sustainability-tool.git
+        cd greenx-sustainability-tool
+# 2. **Prerequisites**  
 To run this project, you'll need the following installed on your machine:
 
 * Docker Desktop (or Docker Engine) & Docker Compose v2: These are essential for building and running the containerized services.
@@ -36,7 +41,7 @@ To run this project, you'll need the following installed on your machine:
 
 * Python: Not required on the host machine, as all collector scripts run inside the backend container.
 
-# 2. **Configuration**  
+# 3. **Configuration**  
 **Create the** .env **file**   
 Before starting the services, you must create a .env file in the root directory of the project. This file is used by Docker Compose to configure the various services.
 
@@ -61,7 +66,7 @@ Before starting the services, you must create a .env file in the root directory 
  
 **Note:** If you change the DB_PORT, remember to update any local database clients accordingly.
 
-# 3. **First Run (Build + Start)**  
+# 4. **First Run (Build + Start)**  
 From the repository root (the same folder as docker-compose.yml), run the following commands:
 
 - To build the images and start all services in the background:  
@@ -86,7 +91,7 @@ From the repository root (the same folder as docker-compose.yml), run the follow
 
         docker compose down -v
 
-# 4. **Service Breakdown**
+# 5. **Service Breakdown**
 - GreenX_db (MySQL 8):
 
     - Exposes ${DB_PORT}:3306 (default example uses 3307 -> 3306).
@@ -123,7 +128,7 @@ From the repository root (the same folder as docker-compose.yml), run the follow
 
   - Persists data using named volumes.
 
-# 5. **Verify Services**  
+# 6. **Verify Services**  
 Check that all services are up and running:
 
    
@@ -136,7 +141,7 @@ InfluxDB UI: http://localhost:8089 (Log in with credentials from your .env file)
 MySQL: Connect from your host with the mysql CLI:
           
           mysql -h 127.0.0.1 -P ${DB_PORT} -u ${MYSQL_USER} -p
-# 6. **Running the collectors manually (inside the backend container)**   
+# 7. **Running the collectors manually (inside the backend container)**   
 - Open a shell in the backend container:
 
 
@@ -154,11 +159,11 @@ MySQL: Connect from your host with the mysql CLI:
         # PSU
         python /app/collector/main_psu.py
 
-# 7. Scheduling the collectors
+# 8. Scheduling the collectors
 You can schedule from the host (recommended) or inside the container.
 Below is the host-cron approach, which does not require modifying images.
 
-**7.1 Host cron (Linux/macOS)**    
+**8.1 Host cron (Linux/macOS)**    
 - Open crontab:
 
 
@@ -193,7 +198,7 @@ Below is the host-cron approach, which does not require modifying images.
 **Tip:** Tail logs with sudo tail -f /var/log/greenx/*.log
 
 
-**7.2 Windows Task Scheduler (if you’re on Windows)**  
+**8.2 Windows Task Scheduler (if you’re on Windows)**  
 - Create a Basic Task → Action: Start a program and use:
 
 
@@ -215,7 +220,7 @@ Create separate tasks for main_power.py and main_psu.py.
 
 
 
-# 8. Premium Version Access
+# 9. Premium Version Access
 Looking for advanced features, priority updates, and premium support?
 Our premium version offers extended data analytics, enhanced scheduling options, and custom integrations tailored to your infrastructure.
 
